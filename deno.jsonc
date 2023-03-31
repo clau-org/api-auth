@@ -4,6 +4,8 @@
     "dev": "deno run -A --watch src/main.ts",
     "test": "deno test",
     "test:dev": "deno test --watch",
-    "preview": "deno run -A src/main.ts"
+    "preview": "deno run -A src/main.ts",
+    "deploy:test": "deployctl deploy --project='api-auth' --exclude='node_modules' src/main.ts ",
+    "deploy:prod": "deployctl deploy --project='api-auth' --prod --exclude='node_modules' src/main.ts "
   }
 }

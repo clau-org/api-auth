@@ -1,0 +1,50 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: "Select environment"
+        required: true
+        default: "prod"
+        type: choice
+        options:
+          - prod
+          - test
+
+run-name: "Deploy to '${{ github.ref == 'refs/heads/main' && inputs.stage || 'prod' }}' with message '${{ github.event.head_commit.message }}'"
+
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  NODE_OPTIONS: "--max_old_space_size=4096"
+  DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
+  DENO_AUTH_TOKENS:  "${{ secrets.GITHUB_TOKEN }}@raw.githubusercontent.com"
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    name: Deploy API
+
+    steps:
+      - name: Checkout code 📁
+        uses: actions/checkout@v3
+
+      - name: Install Deno ⬇️
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Install deployctl ⬇️
+        run: deno install -A -r -f https://deno.land/x/deploy/deployctl.ts
+
+      - name: Setup Prisma ⚒️
+        run: deno task prisma
+
+      - name: Preview 👀
+        run: deno task preview & sleep 2 && kill $!
+
+      - name: Deploy 🚀
+        run: deno task deploy:${{ github.ref == 'refs/heads/main' && inputs.stage || 'prod' }}
