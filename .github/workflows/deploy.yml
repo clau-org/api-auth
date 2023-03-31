@@ -40,8 +40,11 @@ jobs:
       - name: Install deployctl ⬇️
         run: deno install -A -r -f https://deno.land/x/deploy/deployctl.ts
 
-      - name: Setup Prisma ⚒️
-        run: deno task prisma
+      # - name: Setup Prisma ⚒️
+      #   run: deno task prisma
+
+      - name: Test 🥑
+        run: deno task test
 
       - name: Preview 👀
         run: deno task preview & sleep 2 && kill $!
