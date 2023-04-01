@@ -8,7 +8,9 @@ api.logger.setLevelError();
 const uuid = crypto.randomUUID();
 const email = `test-${uuid}@test.com`;
 
-let session = Deno.test("Registration endpoint", async () => {
+let session:any = null 
+
+Deno.test("Registration endpoint", async () => {
   const request = await superoak(api.app);
 
   await request
