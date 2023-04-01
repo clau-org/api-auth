@@ -39,7 +39,7 @@ jobs:
           deno-version: v1.x
 
       - name: Test
-        run: deno test
+        run: deno task test
 
       - name: Update version
         id: update_version
