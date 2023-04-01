@@ -441,6 +441,22 @@
     "https://raw.githubusercontent.com/clau-org/api-core/v0.0.6/deps.ts": "3018fafe48638a5b3ad51d4d6b5acd9d2ddfa37a678c5bf22f19420f3d62f337",
     "https://raw.githubusercontent.com/clau-org/api-core/v0.0.6/src/api.ts": "99930286f70dfdbc027c5e63370eddf25080540efceae5182ebfb79f0b66590b",
     "https://raw.githubusercontent.com/clau-org/api-core/v0.0.6/src/log.ts": "bf09d899b1b666db84f0b633c141247e8edd48562d7afd80fe69506598c2848d",
-    "https://raw.githubusercontent.com/clau-org/api-core/v0.0.6/src/middleware/validate.ts": "ae2e0d3c741c47bdaf62f63a8d7b2dabb0eb982b9085f8df2d4cc5d1cc9ec49f"
+    "https://raw.githubusercontent.com/clau-org/api-core/v0.0.6/src/middleware/validate.ts": "ae2e0d3c741c47bdaf62f63a8d7b2dabb0eb982b9085f8df2d4cc5d1cc9ec49f",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.2/src/db.ts": "29596323717ae10572b301435dff2ae8b0a299b64f5fa1e8bad331b6f0ca03a5",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.2/src/schema/generated/client/deno/edge.js": "07559dbb913be9a1314e26e4c248477bef50b66c9fb135930dae8b67e03948c4",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.2/src/schema/generated/client/deno/edge.ts": "5eb8d96bc2ad5434cd3dc856c56c3493fcd41b4e4fd3da30bbe7b6b3f3f92597",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.2/src/schema/generated/client/deno/index.d.ts": "d7e3b881b4eee0020eb8fc2fc09a4427cc87a6161691ec81b5b32d1845fdef6c",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.2/src/schema/generated/client/deno/polyfill.js": "b1af42feb6a95724265331ec1007fef4f0fcee09d238c09fa3aa2d4d83b025c6",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.2/src/schema/generated/client/runtime/edge-esm.js": "a295e0705388d76e55935d34b5482da66b211daa4e4f05c1a3945bc0a53c6c89",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.2/src/schema/generated/client/runtime/index.d.ts": "b1642600d52b3fa1309d14de4713691af8a9aa11ec3f1ac9cfeea6b7611b22ab",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.2/src/schema/models.ts": "5b70a663eb0e676397fbb5aa2630c1c5913ed366cd1e41e6f41802f47286680e",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/db.ts": "29596323717ae10572b301435dff2ae8b0a299b64f5fa1e8bad331b6f0ca03a5",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/schema/generated/client/deno/edge.js": "7f03693e9d63c6c0a48069e16beef1d7f5996d298d0c626f8e95db4db9847770",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/schema/generated/client/deno/edge.ts": "5eb8d96bc2ad5434cd3dc856c56c3493fcd41b4e4fd3da30bbe7b6b3f3f92597",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/schema/generated/client/deno/index.d.ts": "25084534f597d3416d306d34c4d2da8bd40bbb21200da0d81b2c0feeaf782456",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/schema/generated/client/deno/polyfill.js": "b1af42feb6a95724265331ec1007fef4f0fcee09d238c09fa3aa2d4d83b025c6",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/schema/generated/client/runtime/edge-esm.js": "a295e0705388d76e55935d34b5482da66b211daa4e4f05c1a3945bc0a53c6c89",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/schema/generated/client/runtime/index.d.ts": "b1642600d52b3fa1309d14de4713691af8a9aa11ec3f1ac9cfeea6b7611b22ab",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/schema/models.ts": "5b70a663eb0e676397fbb5aa2630c1c5913ed366cd1e41e6f41802f47286680e"
   }
 }

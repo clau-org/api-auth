@@ -3,63 +3,68 @@ import { api } from "../../src/api.ts"; // Import the router from the provided c
 
 api.setupApp();
 
-Deno.test("Registration endpoint", async () => {
+api.logger.setLevelError();
+
+const uuid = crypto.randomUUID();
+const email = `test-${uuid}@test.com`;
+
+let session = Deno.test("Registration endpoint", async () => {
   const request = await superoak(api.app);
+
   await request
-    .post("/register")
-    .send({ email: "test@example.com" })
+    .post("/authentication/register")
+    .send({ email })
     .expect(200)
     .expect(({ body }: any) => {
-      if (!body.jwt) {
+      if (!body.session) {
         throw new Error("Missing JWT");
       }
+
+      session = body.session;
     });
 });
 
 Deno.test("Login endpoint", async () => {
   const request = await superoak(api.app);
   await request
-    .post("/login")
-    .send({ email: "test@example.com" })
+    .post("/authentication/login")
+    .send({ email })
     .expect(200)
     .expect(({ body }: any) => {
-      if (!body.jwt) {
+      if (!body.session) {
         throw new Error("Missing JWT");
+      }
+
+      session = body.session;
+    });
+});
+
+Deno.test("Verify endpoint", async () => {
+  const { jwt } = session!;
+
+  // Test the verify endpoint with the obtained JWT
+  const request = await superoak(api.app);
+  await request
+    .post("/authentication/verify")
+    .send({ jwt })
+    .expect(200)
+    .expect(({ body }: any) => {
+      if (!body.session) {
+        throw new Error("Invalid payload");
       }
     });
 });
 
 Deno.test("Logout endpoint", async () => {
+  const { jwt } = session!;
+
   const request = await superoak(api.app);
   await request
-    .post("/logout")
-    .send({ token: "test@example.com" }) // Note: The provided code had an error in the validation schema for the token. It should be z.string() instead of z.string().email()
+    .post("/authentication/logout")
+    .send({ jwt }) // Note: The provided code had an error in the validation schema for the token. It should be z.string() instead of z.string().email()
     .expect(200)
     .expect(({ body }: any) => {
-      if (!body.message.startsWith("logout from PLATFORM-API")) {
-        throw new Error("Invalid response message");
-      }
-    });
-});
-
-Deno.test("Verify endpoint", async () => {
-  // Obtain a JWT from the registration endpoint
-  const registrationRequest = await superoak(api.app);
-  const registrationResponse = await registrationRequest
-    .post("/register")
-    .send({ email: "test@example.com" })
-    .expect(200);
-
-  const jwt = registrationResponse.body.jwt;
-
-  // Test the verify endpoint with the obtained JWT
-  const request = await superoak(api.app);
-  await request
-    .post("/verify")
-    .send({ token: jwt })
-    .expect(200)
-    .expect(({ body }: any) => {
-      if (!body.payload) {
+      if (!body.session) {
         throw new Error("Invalid payload");
       }
     });
