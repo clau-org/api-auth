@@ -457,6 +457,14 @@
     "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/schema/generated/client/deno/polyfill.js": "b1af42feb6a95724265331ec1007fef4f0fcee09d238c09fa3aa2d4d83b025c6",
     "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/schema/generated/client/runtime/edge-esm.js": "a295e0705388d76e55935d34b5482da66b211daa4e4f05c1a3945bc0a53c6c89",
     "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/schema/generated/client/runtime/index.d.ts": "b1642600d52b3fa1309d14de4713691af8a9aa11ec3f1ac9cfeea6b7611b22ab",
-    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/schema/models.ts": "5b70a663eb0e676397fbb5aa2630c1c5913ed366cd1e41e6f41802f47286680e"
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.3/src/schema/models.ts": "5b70a663eb0e676397fbb5aa2630c1c5913ed366cd1e41e6f41802f47286680e",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.4/src/db.ts": "29596323717ae10572b301435dff2ae8b0a299b64f5fa1e8bad331b6f0ca03a5",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.4/src/schema/generated/client/deno/edge.js": "ae29745d65d22220ef1194966f2f03f3284c004f6f97b8b813ce5e361940f470",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.4/src/schema/generated/client/deno/edge.ts": "5eb8d96bc2ad5434cd3dc856c56c3493fcd41b4e4fd3da30bbe7b6b3f3f92597",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.4/src/schema/generated/client/deno/index.d.ts": "9702a8a5a90bb909932b2b6337c097f0dc31e2ac21d0b1e260f703437f2242bf",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.4/src/schema/generated/client/deno/polyfill.js": "b1af42feb6a95724265331ec1007fef4f0fcee09d238c09fa3aa2d4d83b025c6",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.4/src/schema/generated/client/runtime/edge-esm.js": "a295e0705388d76e55935d34b5482da66b211daa4e4f05c1a3945bc0a53c6c89",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.4/src/schema/generated/client/runtime/index.d.ts": "b1642600d52b3fa1309d14de4713691af8a9aa11ec3f1ac9cfeea6b7611b22ab",
+    "https://raw.githubusercontent.com/clau-org/api-db-client/v0.0.4/src/schema/models.ts": "5b70a663eb0e676397fbb5aa2630c1c5913ed366cd1e41e6f41802f47286680e"
   }
 }

@@ -42,6 +42,7 @@ async function createSession({ user }: { user: any }) {
       uuid,
       jwt,
       user_id: user.id,
+      user_uuid: user.uuid,
     },
   });
 }
