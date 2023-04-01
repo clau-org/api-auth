@@ -1,43 +1,57 @@
 import {
   ApiRouter,
+  Context,
+  DBClient,
   JWT,
+  Middleware,
   validate,
   z,
-  DBClient,
-  Context,
-  Middleware,
 } from "../../deps.ts";
 
 const router = new ApiRouter({
   prefix: "/authentication",
 }); // Create a new router instance
 
-const encoder = new TextEncoder(); // Create a new text encoder
-
-const jwtKeyRaw = encoder.encode("mySuperSecret"); // Encode the secret key as raw data
-
-const jwtHeader: JWT.Header = { alg: "HS512", typ: "JWT" }; // JWT header containing algorithm and token type
-
 const CLAU_PLATFORM_PROXY_DB =
   "prisma://aws-us-east-1.prisma-data.com/?api_key=mY4engKpoOtH3QVxb9NWeTZ_NWpEeoT6CcLwsDAtpsefXTby_mpAjYXQj1qLL0yF";
 
-const dbClient = new DBClient({
+const { users, sessions } = new DBClient({
   datasources: {
     db: { url: CLAU_PLATFORM_PROXY_DB },
   },
 });
 
-const { users, sessions } = dbClient;
+// Helper function to create a new session
+async function createSession({ user }: { user: any }) {
+  // Generate a random UUID for session
+  const uuid = crypto.randomUUID();
 
-const jwtKey = await crypto.subtle.importKey(
-  "raw", // Key is in raw format
-  jwtKeyRaw, // Raw key data
-  { name: "HMAC", hash: "SHA-512" }, // Create a new HMAC key with SHA-512 hashing algorithm
-  true, // Key is extractable (can be exported)
-  ["sign", "verify"] // Allow key to be used for signing and verifying
-);
+  // Create JWT
+  const secret = "mySuperSecret";
+  const jwtKeyRaw = new TextEncoder().encode(secret); // Encode the secret key as raw data
+  const jwtHeader: JWT.Header = { alg: "HS512", typ: "JWT" }; // JWT header containing algorithm and token type
+  const jwtKey = await crypto.subtle.importKey(
+    "raw", // Key is in raw format
+    jwtKeyRaw, // Raw key data
+    { name: "HMAC", hash: "SHA-512" }, // Create a new HMAC key with SHA-512 hashing algorithm
+    true, // Key is extractable (can be exported)
+    ["sign", "verify"], // Allow key to be used for signing and verifying
+  );
 
-const checkExistingUser: Middleware = async (ctx: Context, next: any) => {
+  // Co-relate session and jwt
+  const jwt = await JWT.create(jwtHeader, { session: { uuid }, user }, jwtKey);
+
+  // Create session
+  return sessions.create({
+    data: {
+      uuid,
+      jwt,
+      user_id: user.id,
+    },
+  });
+}
+
+const validateUserUnique: Middleware = async (ctx: Context, next: any) => {
   const { email } = ctx.state.requestData;
 
   const existingUser = await users.findFirst({
@@ -48,54 +62,17 @@ const checkExistingUser: Middleware = async (ctx: Context, next: any) => {
 
   if (existingUser) {
     ctx.response.status = 200;
-    ctx.response.body = { message: "User already exists" };
+    ctx.response.body = {
+      message: "User already exists",
+      ...ctx.state.requestData,
+    };
     return;
   }
 
   await next();
 };
 
-router.all(
-  "/register",
-  validate({
-    schema: z.object({
-      email: z.string().email(), // Define validation schema for email
-    }),
-  }),
-  checkExistingUser,
-  async (ctx) => {
-    const { email } = ctx.state.requestData; // Extract email from request data
-
-    const uuid = crypto.randomUUID(); // Generate a random UUID for session
-
-    const user = await users.create({
-      data: {
-        email,
-      },
-    });
-
-    const jwt = await JWT.create(
-      jwtHeader,
-      { session: { uuid }, user },
-      jwtKey
-    ); // Create a new JWT with UUID, email, and HMAC key
-
-    const session = await sessions.create({
-      data: {
-        uuid,
-        jwt,
-        user_id: user.id,
-      },
-    });
-
-    ctx.response.body = {
-      session,
-      user,
-    };
-  }
-);
-
-const checkNonExistingUser: Middleware = async (ctx: Context, next: any) => {
+const validateUserExist: Middleware = async (ctx: Context, next: any) => {
   const { email } = ctx.state.requestData;
 
   const existingUser = await users.findFirst({
@@ -113,47 +90,7 @@ const checkNonExistingUser: Middleware = async (ctx: Context, next: any) => {
   await next();
 };
 
-router.all(
-  "/login",
-  validate({
-    schema: z.object({
-      email: z.string().email(), // Define validation schema for email
-    }),
-  }),
-  checkNonExistingUser,
-  async (ctx) => {
-    const { email } = ctx.state.requestData; // Extract email from request data
-
-    const uuid = crypto.randomUUID(); // Generate a random UUID for session
-
-    const user = await users.findFirst({
-      where: {
-        email,
-      },
-    });
-
-    const jwt = await JWT.create(
-      jwtHeader,
-      { session: { uuid }, user },
-      jwtKey
-    ); // Create a new JWT with UUID, email, and HMAC key
-
-    const session = await sessions.create({
-      data: {
-        uuid,
-        jwt,
-        user_id: user!.id,
-      },
-    });
-
-    ctx.response.body = {
-      session,
-      user,
-    };
-  }
-);
-
-const checkNonExistingSession: Middleware = async (ctx: Context, next: any) => {
+const validateSessionExist: Middleware = async (ctx: Context, next: any) => {
   const { jwt } = ctx.state.requestData;
 
   const existingSession = await sessions.findFirst({
@@ -172,13 +109,65 @@ const checkNonExistingSession: Middleware = async (ctx: Context, next: any) => {
 };
 
 router.all(
+  "/register",
+  validate({
+    schema: z.object({
+      email: z.string().email(), // Define validation schema for email
+    }),
+  }),
+  validateUserUnique,
+  async (ctx) => {
+    const { email } = ctx.state.requestData; // Extract email from request data
+
+    const user = await users.create({
+      data: {
+        email,
+      },
+    });
+
+    const session = await createSession({ user });
+
+    ctx.response.body = {
+      session,
+      user,
+    };
+  },
+);
+
+router.all(
+  "/login",
+  validate({
+    schema: z.object({
+      email: z.string().email(), // Define validation schema for email
+    }),
+  }),
+  validateUserExist,
+  async (ctx) => {
+    const { email } = ctx.state.requestData; // Extract email from request data
+
+    const user = await users.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    const session = await createSession({ user });
+
+    ctx.response.body = {
+      session,
+      user,
+    };
+  },
+);
+
+router.all(
   "/logout",
   validate({
     schema: z.object({
       jwt: z.string(), // Define validation schema for token (email?)
     }),
   }),
-  checkNonExistingSession,
+  validateSessionExist,
   async (ctx) => {
     const { jwt } = ctx.state.requestData; // Extract token from request data
 
@@ -198,7 +187,7 @@ router.all(
       message: "Session deleted",
       session,
     };
-  }
+  },
 );
 
 router.all(
@@ -208,26 +197,24 @@ router.all(
       jwt: z.string(), // Define validation schema for token
     }),
   }),
-  checkNonExistingSession,
+  validateSessionExist,
   async (ctx) => {
     const { jwt } = ctx.state.requestData; // Extract token from request data
 
-    const existingSession = await sessions.findFirst({
+    const { user, ...session } = (await sessions.findFirst({
       where: {
         jwt,
       },
       include: {
         user: true,
       },
-    });
-
-    const { user, ...session } = existingSession!;
+    })) ?? {};
 
     ctx.response.body = {
       session: session,
       user: user,
     };
-  }
+  },
 );
 
 export { router }; // Export the router instance
