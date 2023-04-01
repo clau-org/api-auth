@@ -8,16 +8,11 @@ import {
   z,
 } from "../../deps.ts";
 
-const router = new ApiRouter({
-  prefix: "/authentication",
-}); // Create a new router instance
-
-const CLAU_PLATFORM_PROXY_DB =
-  "prisma://aws-us-east-1.prisma-data.com/?api_key=mY4engKpoOtH3QVxb9NWeTZ_NWpEeoT6CcLwsDAtpsefXTby_mpAjYXQj1qLL0yF";
+import { PROXY_DB } from "../config.ts";
 
 const { users, sessions } = new DBClient({
   datasources: {
-    db: { url: CLAU_PLATFORM_PROXY_DB },
+    db: { url: PROXY_DB },
   },
 });
 
@@ -51,6 +46,7 @@ async function createSession({ user }: { user: any }) {
   });
 }
 
+// Validation Middleware
 const validateUserUnique: Middleware = async (ctx: Context, next: any) => {
   const { email } = ctx.state.requestData;
 
@@ -72,6 +68,7 @@ const validateUserUnique: Middleware = async (ctx: Context, next: any) => {
   await next();
 };
 
+// Validation Middleware
 const validateUserExist: Middleware = async (ctx: Context, next: any) => {
   const { email } = ctx.state.requestData;
 
@@ -90,6 +87,7 @@ const validateUserExist: Middleware = async (ctx: Context, next: any) => {
   await next();
 };
 
+// Validation Middleware
 const validateSessionExist: Middleware = async (ctx: Context, next: any) => {
   const { jwt } = ctx.state.requestData;
 
@@ -107,6 +105,11 @@ const validateSessionExist: Middleware = async (ctx: Context, next: any) => {
 
   await next();
 };
+
+// Create a new router instance
+const router = new ApiRouter({
+  prefix: "/authentication",
+});
 
 router.all(
   "/register",
