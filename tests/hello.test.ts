@@ -1,3 +1,2 @@
 Deno.test("Empty test", () => {
-
 });

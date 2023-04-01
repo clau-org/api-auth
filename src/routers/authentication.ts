@@ -1,6 +1,13 @@
-import { ApiRouter, validate, z } from "../../deps.ts";
+import { ApiRouter, JWT, validate, z } from "../../deps.ts";
 
 const router = new ApiRouter();
+
+const jwtHeader: JWT.Header = { alg: "HS512", typ: "JWT" };
+const jwtKey = await crypto.subtle.generateKey(
+  { name: "HMAC", hash: "SHA-512" },
+  true,
+  ["sign", "verify"],
+);
 
 router.all(
   "/register",
@@ -9,10 +16,16 @@ router.all(
       email: z.string().email(),
     }),
   }),
-  (ctx) => {
-    const {email} = ctx.state.requestData
+  async (ctx) => {
+    const { email } = ctx.state.requestData;
+
+    const uuid = crypto.randomUUID();
+
+    const jwt = await JWT.create(jwtHeader, { uuid, email }, jwtKey);
+
     ctx.response.body = {
-      message: `register from PLATFORM-API: `+email
+      jwt,
+      email,
     };
   },
 );
@@ -24,10 +37,16 @@ router.all(
       email: z.string().email(),
     }),
   }),
-  (ctx) => {
-    const {email} = ctx.state.requestData
+  async (ctx) => {
+    const { email } = ctx.state.requestData;
+
+    const uuid = crypto.randomUUID();
+
+    const jwt = await JWT.create(jwtHeader, { uuid, email }, jwtKey);
+
     ctx.response.body = {
-      message: `Login from PLATFORM-API: `+email
+      email,
+      jwt,
     };
   },
 );
@@ -36,13 +55,14 @@ router.all(
   "/logout",
   validate({
     schema: z.object({
-        token: z.string().email(),
+      token: z.string().email(),
     }),
   }),
   (ctx) => {
-    const {token} = ctx.state.requestData
+    const { token } = ctx.state.requestData;
+
     ctx.response.body = {
-      message: `logout from PLATFORM-API: `+token
+      message: `logout from PLATFORM-API: ` + token,
     };
   },
 );
@@ -54,10 +74,13 @@ router.all(
       token: z.string(),
     }),
   }),
-  (ctx) => {
-    const {token} = ctx.state.requestData
+  async (ctx) => {
+    const { token } = ctx.state.requestData;
+
+    const payload = await JWT.verify(token, jwtKey);
+
     ctx.response.body = {
-      message: `verify from PLATFORM-API: `+token
+      payload,
     };
   },
 );
